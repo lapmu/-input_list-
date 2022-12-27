@@ -1,23 +1,49 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from 'react';
+import Input from './components/input';
+import List from './components/list';
+import memo from './data/dummy';
 
 function App() {
+  const [isMemo, setMemo] = useState(memo)
+
+  useEffect(()=>{
+    const localMemo = localStorage.getItem('memo')
+    const parseMemo = JSON.parse(localMemo)
+
+    if(parseMemo){
+      setMemo(parseMemo)
+    }
+  }, [])
+
+  const addMemo = (Id, Email, content) => {
+  /*
+memo = [
+    {
+        'Id' : Id
+        'Email' : ~~~~
+        'content' : ~~~~
+    }
+]
+*/  
+  const newMemo = {
+    Id,
+    Email,
+    content
+  }
+
+  const data = [...isMemo, newMemo]
+  setMemo(data)
+
+  const stringMemo = JSON.stringify(data)
+  localStorage.setItem('memo', stringMemo)
+
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Input addMemo={addMemo}/>
+      <List isMemo={isMemo}/>
     </div>
   );
 }
